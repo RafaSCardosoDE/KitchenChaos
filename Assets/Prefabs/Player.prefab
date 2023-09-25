@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 6796510354431559539}
   - component: {fileID: 5316169507153961733}
   - component: {fileID: 3139418665093207540}
+  - component: {fileID: -6698258949576413126}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -79,6 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8974791b99cf2648ae4fcedabf1d544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: 0
   moveSpeed: 5
   gameInput: {fileID: 0}
   countersLayerMask:
@@ -97,6 +99,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b54dc6b5ccaf9a64b987b958cdb0f76f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-6698258949576413126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3628880814034764837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &3538771821495126374
 PrefabInstance:
   m_ObjectHideFlags: 0
