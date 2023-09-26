@@ -117,7 +117,6 @@ public class DeliveryManager : NetworkBehaviour
     [ClientRpc]
     private void CorrectRecipeDeliveredClientRpc(int waitingRecipeSOIndex)
     {
-        Debug.Log("Client Correct delivery");
         waitingRecipeSOList.RemoveAt(waitingRecipeSOIndex);
         successfulRecipesAmount++;
         OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
@@ -127,7 +126,6 @@ public class DeliveryManager : NetworkBehaviour
     [ClientRpc]
     private void IncorrectRecipeDeliveredClientRpc()
     {
-        Debug.Log("Client Incorrect delivery");
         OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
 
