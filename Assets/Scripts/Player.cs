@@ -9,7 +9,15 @@ using UnityEngine.Rendering;
 
 public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    //public static Player Instance { get; private set; }
+    public static event EventHandler OnAnyPlayerSpawned;
+    public static event EventHandler OnAnyPickedSomething;
+        public static void ResetStaticData()
+    {
+        OnAnyPlayerSpawned = null;
+        OnAnyPickedSomething = null;
+    }
+
+    public static Player LocalInstance { get; private set; }
 
     public event EventHandler OnPickedSomething;
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -18,7 +26,6 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         public BaseCounter selectedCounter;
     }
 
-    [SerializeField] private int name;
     [SerializeField] private float moveSpeed = 10;
     [SerializeField] private LayerMask countersLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
@@ -28,14 +35,20 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
-    private void Awake()
-    {   
-        //Instance = this;
-    }
     private void Start()
     {
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if(IsOwner)
+        {
+            LocalInstance = this;
+        }
+
+        OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
     }
 
     private void GameInput_OnInteractAlternateAction(object sender, EventArgs e)
@@ -182,12 +195,12 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
-        if(kitchenObject != null)
+        if (kitchenObject != null)
         {
             OnPickedSomething?.Invoke(this, EventArgs.Empty);
+            OnAnyPickedSomething?.Invoke(this, EventArgs.Empty);
         }
     }
-
     public KitchenObject GetKitchenObject()
     {
         return kitchenObject;
