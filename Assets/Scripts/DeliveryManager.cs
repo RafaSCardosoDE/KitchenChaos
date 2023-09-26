@@ -23,6 +23,8 @@ public class DeliveryManager : NetworkBehaviour
     private int waitingRecipesMax = 4;
     private int successfulRecipesAmount;
 
+    private PlateKitchenObject receivedPlateKitchenObject;
+
     private void Awake()
     {
         Instance = this;
@@ -61,50 +63,72 @@ public class DeliveryManager : NetworkBehaviour
 
     public void DeliveryRecipe(PlateKitchenObject plateKitchenObject)
     {
-         for(int i = 0; i < waitingRecipeSOList.Count; i++)
+        receivedPlateKitchenObject = plateKitchenObject;
+
+        CheckRecipeSOServerRPC();
+    }
+
+    [ServerRpc(RequireOwnership =false)]
+    private void CheckRecipeSOServerRPC()
+    {
+        for (int i = 0; i < waitingRecipeSOList.Count; i++)
         {
             RecipeSO waitingRecipeSO = waitingRecipeSOList[i];
 
-            if(waitingRecipeSO.kitchenObjectSOList.Count == plateKitchenObject.GetKitchenObjectSOList().Count)
+            if (waitingRecipeSO.kitchenObjectSOList.Count == receivedPlateKitchenObject.GetKitchenObjectSOList().Count)
             {
                 //Has the same number of ingredients
                 bool plateContentsMatchesRecipe = true;
-                foreach(KitchenObjectSO recipekitchenObjectSO in waitingRecipeSO.kitchenObjectSOList)
+                foreach (KitchenObjectSO recipekitchenObjectSO in waitingRecipeSO.kitchenObjectSOList)
                 {
                     //Cycling through all ingredients in the Recipe
                     bool ingredientFound = false;
-                    foreach(KitchenObjectSO plateKitchenObjectSO in plateKitchenObject.GetKitchenObjectSOList())
+                    foreach (KitchenObjectSO plateKitchenObjectSO in receivedPlateKitchenObject.GetKitchenObjectSOList())
                     {
                         //Cycling through all ingredients in the Plate
-                        if(plateKitchenObjectSO == recipekitchenObjectSO)
+                        if (plateKitchenObjectSO == recipekitchenObjectSO)
                         {
                             //Ingredient matches!
-                            ingredientFound=true;
+                            ingredientFound = true;
                             break;
                         }
                     }
-                    if(!ingredientFound)
+                    if (!ingredientFound)
                     {
                         //This Recipe ingredient was not found on the Plate
-                        plateContentsMatchesRecipe=false;
+                        plateContentsMatchesRecipe = false;
                     }
                 }
 
-                if(plateContentsMatchesRecipe)
+                if (plateContentsMatchesRecipe)
                 {
                     //Player delivered the correct recipe!
-                    waitingRecipeSOList.RemoveAt(i);
-                    successfulRecipesAmount++;
-                    OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
-                    OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
+                    CorrectRecipeDeliveredClientRpc(i);
 
                     return;
                 }
             }
         }
-         //No matches found!
-         //Player did not deliver a correct recipe
-         OnRecipeFailed?.Invoke(this, EventArgs.Empty);
+        //No matches found!
+        //Player did not deliver a correct recipe
+        IncorrectRecipeDeliveredClientRpc();
+    }
+
+    [ClientRpc]
+    private void CorrectRecipeDeliveredClientRpc(int waitingRecipeSOIndex)
+    {
+        Debug.Log("Client Correct delivery");
+        waitingRecipeSOList.RemoveAt(waitingRecipeSOIndex);
+        successfulRecipesAmount++;
+        OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
+        OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
+    }
+
+    [ClientRpc]
+    private void IncorrectRecipeDeliveredClientRpc()
+    {
+        Debug.Log("Client Incorrect delivery");
+        OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
 
     public List<RecipeSO> GetWaitingRecipeSOList()
