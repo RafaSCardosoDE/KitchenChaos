@@ -683,6 +683,26 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2749450479337477201, guid: db23369f270b8ac4e8e6f67a29dd7d08,
         type: 3}
+      propertyPath: defaultBarColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2749450479337477201, guid: db23369f270b8ac4e8e6f67a29dd7d08,
+        type: 3}
+      propertyPath: defaultBarColor.b
+      value: 0.2784314
+      objectReference: {fileID: 0}
+    - target: {fileID: 2749450479337477201, guid: db23369f270b8ac4e8e6f67a29dd7d08,
+        type: 3}
+      propertyPath: defaultBarColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2749450479337477201, guid: db23369f270b8ac4e8e6f67a29dd7d08,
+        type: 3}
+      propertyPath: defaultBarColor.r
+      value: 0.827451
+      objectReference: {fileID: 0}
+    - target: {fileID: 2749450479337477201, guid: db23369f270b8ac4e8e6f67a29dd7d08,
+        type: 3}
       propertyPath: hasProgressGameObject
       value: 
       objectReference: {fileID: 2504005329010231274}
